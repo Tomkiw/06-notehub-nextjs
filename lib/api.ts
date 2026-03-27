@@ -1,33 +1,55 @@
-// lib/api.ts
-
 import axios from "axios";
+import type { Note, CreateNote } from "@/types/note";
 
-export type Note = {
-  id: string;
-  title: string;
-  content: string;
-  categoryId: string;
-  userId: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type NoteListResponse = {
+export interface FetchNotesResponse {
   notes: Note[];
-  total: number;
+  totalPages: number;
+} // ДЗ
+
+const AUTH_TOKEN = process.env.NEXT_PUBLIC_NOTEHUB_TOKEN;
+
+interface FetchNotesParams {
+  page: number;
+  perPage: number;
+  search?: string;
+}
+
+const instance = axios.create({
+  baseURL: "https://notehub-public.goit.study/api",
+  headers: {
+    Authorization: `Bearer ${AUTH_TOKEN}`,
+  },
+});
+
+export const fetchNotes = async ({
+  page,
+  perPage,
+  search,
+}: FetchNotesParams): Promise<FetchNotesResponse> => {
+  const response = await instance.get<FetchNotesResponse>("/notes", {
+    params: {
+      page,
+      perPage,
+      search,
+    },
+  });
+
+  return response.data;
 };
 
-axios.defaults.baseURL = "https://next-v1-notes-api.goit.study";
-
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-export const getNotes = async () => {
-  await delay(2000);
-  const res = await axios.get<NoteListResponse>("/notes");
-  return res.data;
+export const createNote = async (newNote: CreateNote): Promise<Note> => {
+  const { data } = await instance.post<Note>("/notes", newNote);
+  return data;
 };
 
-export const getSingleNote = async (id: string) => {
-  const res = await axios.get<Note>(`/notes/${id}`);
-  return res.data;
+export const deleteNote = async (deleteNoteId: Note["id"]): Promise<Note> => {
+  const { data } = await instance.delete<Note>(`/notes/${deleteNoteId}`);
+  return data;
 };
+
+export const fetchNoteById = async (id: string): Promise<Note> => {
+  const response = await instance.get<Note>(`/notes/${id}`);
+  return response.data;
+};
+//Створіть динамічний маршрут для сторінки з деталями однієї нотатки за її id.
+//У файлі lib\api.ts створіть функцію fetchNoteById для отримання деталей однієї нотатки за її ідентифікатором.
