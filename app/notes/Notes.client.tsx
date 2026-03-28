@@ -1,7 +1,7 @@
 // Усю клієнтську логіку (отримання списку нотаток за допомогою useQuery та їх відображення)
 // винесіть в окремий файл компонента app/notes/Notes.client.tsx.
-
 "use client";
+
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
@@ -13,6 +13,7 @@ import NoteList from "@/components/NoteList/NoteList";
 import Modal from "@/components/Modal/Modal";
 import SearchBox from "@/components/SearchBox/SearchBox";
 import NoteForm from "@/components/NoteForm/NoteForm";
+// import Notes from "./page";
 
 export default function NotesClient() {
   const [page, setPage] = useState(1);
@@ -25,7 +26,7 @@ export default function NotesClient() {
   }, 500);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["notes", searchQuery, page],
+    queryKey: ["notes", page, searchQuery],
     queryFn: () => fetchNotes({ page, perPage: 12, search: searchQuery }),
     placeholderData: keepPreviousData,
   });
