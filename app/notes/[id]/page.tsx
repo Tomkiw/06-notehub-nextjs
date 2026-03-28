@@ -19,7 +19,7 @@ async function NoteDetailsPage({ params }: NoteProps) {
   const queryClient = new QueryClient();
 
   queryClient.prefetchQuery({
-    queryKey: ["notes", id],
+    queryKey: ["note", id],
     queryFn: () => fetchNoteById(id),
   });
 
