@@ -5,7 +5,7 @@ type Props = {
 };
 
 const Error = ({ error }: Props) => {
-  return <p>Something went wrong. ${error.message}</p>;
+  return <p>Something went wrong. {error.message}</p>;
 };
 
 export default Error;
